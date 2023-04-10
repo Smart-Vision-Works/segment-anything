@@ -18,6 +18,7 @@ class SamPredictor:
     def __init__(
         self,
         sam_model: Sam,
+        device = None,
     ) -> None:
         """
         Uses SAM to calculate the image embedding for an image, and then
@@ -28,6 +29,7 @@ class SamPredictor:
         """
         super().__init__()
         self.model = sam_model
+        sam_model = sam_model.to(device)
         self.transform = ResizeLongestSide(sam_model.image_encoder.img_size)
         self.reset_image()
 
@@ -186,7 +188,7 @@ class SamPredictor:
           point_labels (torch.Tensor or None): A BxN array of labels for the
             point prompts. 1 indicates a foreground point and 0 indicates a
             background point.
-          boxes (np.ndarray or None): A Bx4 array given a box prompt to the
+          box (np.ndarray or None): A Bx4 array given a box prompt to the
             model, in XYXY format.
           mask_input (np.ndarray): A low resolution mask input to the model, typically
             coming from a previous prediction iteration. Has form Bx1xHxW, where
